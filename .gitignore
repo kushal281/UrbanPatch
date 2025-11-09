@@ -1,0 +1,258 @@
+# UrbanPatch - Root .gitignore
+# Place this in the root directory (urbanpatch_official/)
+
+# ==================== CRITICAL - NEVER COMMIT ====================
+
+# Environment variables (MOST IMPORTANT!)
+.env
+.env.local
+.env.*.local
+**/.env
+**/config/secrets.js
+**/secrets.json
+
+# API Keys
+**/*api-keys*
+**/*apikeys*
+**/*secret*
+**/*credentials*
+
+# ==================== Dependencies ====================
+
+# Node modules
+node_modules/
+**/node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+
+# Package manager lock files (optional - comment out if you want to commit them)
+# package-lock.json
+# yarn.lock
+# pnpm-lock.yaml
+
+# ==================== Build Outputs ====================
+
+# Frontend build
+frontend/build/
+frontend/dist/
+
+# Backend compiled files
+backend/dist/
+backend/build/
+
+# ==================== Database & Storage ====================
+
+# MongoDB data (if running locally)
+data/
+mongodb-data/
+*.mongodb
+
+# Uploads folder (if storing files locally)
+backend/uploads/
+backend/public/uploads/
+
+# SQLite databases
+*.db
+*.sqlite
+*.sqlite3
+
+# ==================== Logs ====================
+
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# ==================== OS Files ====================
+
+# macOS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+.AppleDouble
+.LSOverride
+
+# Windows
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Linux
+*~
+.fuse_hidden*
+.directory
+.Trash-*
+
+# ==================== IDE & Editors ====================
+
+# VSCode
+.vscode/
+*.code-workspace
+
+# IntelliJ IDEA
+.idea/
+*.iml
+*.ipr
+*.iws
+out/
+
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+
+# Atom
+.atom/
+
+# Vim
+[._]*.s[a-v][a-z]
+[._]*.sw[a-p]
+[._]s[a-rt-v][a-z]
+[._]ss[a-gi-z]
+[._]sw[a-p]
+
+# Emacs
+*~
+\#*\#
+/.emacs.desktop
+/.emacs.desktop.lock
+*.elc
+
+# ==================== Testing & Coverage ====================
+
+coverage/
+*.lcov
+.nyc_output/
+test-results/
+junit.xml
+
+# ==================== Temporary Files ====================
+
+tmp/
+temp/
+*.tmp
+*.temp
+.cache/
+
+# ==================== Deployment ====================
+
+# Vercel
+.vercel
+
+# Netlify
+.netlify
+
+# AWS
+.aws-sam/
+
+# Docker
+docker-compose.override.yml
+
+# ==================== Security & Certificates ====================
+
+# SSL Certificates
+*.pem
+*.key
+*.crt
+*.cer
+*.der
+*.pfx
+
+# SSH keys
+id_rsa
+id_rsa.pub
+*.ppk
+
+# ==================== Misc ====================
+
+# Sentry
+.sentryclirc
+
+# Firebase
+.firebase/
+firebase-debug.log
+firestore-debug.log
+ui-debug.log
+
+# Storybook
+storybook-static/
+
+# Turbo
+.turbo/
+
+# Optional REPL history
+.node_repl_history
+
+# Optional npm cache directory
+.npm
+
+# Optional eslint cache
+.eslintcache
+
+# Optional stylelint cache
+.stylelintcache
+
+# Microbundle cache
+.rpt2_cache/
+.rts2_cache_cjs/
+.rts2_cache_es/
+.rts2_cache_umd/
+
+# Optional TypeScript cache
+*.tsbuildinfo
+
+# Yarn Integrity file
+.yarn-integrity
+
+# parcel-bundler cache
+.parcel-cache
+
+# Next.js
+.next/
+out/
+
+# Gatsby
+.cache/
+public/
+
+# Nuxt.js
+.nuxt/
+
+# Serverless
+.serverless/
+
+# FuseBox
+.fusebox/
+
+# DynamoDB Local
+.dynamodb/
+
+# TernJS
+.tern-port
+
+# MacOS Finder
+.fseventsd
+
+# ==================== Documentation (Optional) ====================
+# Uncomment if you don't want to commit generated docs
+# docs/generated/
+# api-docs/
+
+# ==================== WHITELIST (Files to ALWAYS include) ====================
+# Add ! before files you want to force include despite patterns above
+
+!.gitkeep
+!.env.example
+!README.md
