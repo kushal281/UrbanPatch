@@ -1,17 +1,21 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, useMapEvents } from 'react-leaflet';
-import MarkerClusterGroup from 'react-leaflet-markercluster';
+import MarkerClusterGroup from 'react-leaflet-cluster';
 import L from 'leaflet';
 import { Button } from 'react-bootstrap';
 import 'leaflet/dist/leaflet.css';
-import 'react-leaflet-markercluster/dist/styles.min.css';
 
-// Fix for default marker icons
+// FIX: Import marker images properly for Create React App
+import markerIcon2x from 'leaflet/dist/images/marker-icon-2x.png';
+import markerIcon from 'leaflet/dist/images/marker-icon.png';
+import markerShadow from 'leaflet/dist/images/marker-shadow.png';
+
+// Fix default marker icons
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
-  iconRetinaUrl: require('leaflet/dist/images/marker-icon-2x.png'),
-  iconUrl: require('leaflet/dist/images/marker-icon.png'),
-  shadowUrl: require('leaflet/dist/images/marker-shadow.png'),
+  iconRetinaUrl: markerIcon2x,
+  iconUrl: markerIcon,
+  shadowUrl: markerShadow,
 });
 
 // Custom marker icon creator
@@ -60,10 +64,12 @@ const MapView = ({
   onIssueClick, 
   onMapClick, 
   isAddingIssue = false,
+  showHeatmap = false,
   center = [20.2961, 85.8245], // Default to Durg, Chhattisgarh
   zoom = 13 
 }) => {
   const [userLocation, setUserLocation] = useState(null);
+  const [mapCenter, setMapCenter] = useState(center);
   const mapRef = useRef();
 
   // Get user's current location
@@ -72,10 +78,13 @@ const MapView = ({
       navigator.geolocation.getCurrentPosition(
         (position) => {
           const { latitude, longitude } = position.coords;
-          setUserLocation([latitude, longitude]);
+          const location = [latitude, longitude];
+          setUserLocation(location);
+          setMapCenter(location); // Center on user location
         },
         (error) => {
           console.error('Error getting location:', error);
+          // Use default center if geolocation fails
         }
       );
     }
@@ -96,7 +105,7 @@ const MapView = ({
   return (
     <div className="map-container">
       <MapContainer
-        center={userLocation || center}
+        center={mapCenter}
         zoom={zoom}
         style={{ height: '100%', width: '100%' }}
         ref={mapRef}
@@ -122,58 +131,80 @@ const MapView = ({
               iconAnchor: [10, 10],
             })}
           >
-            <Popup>Your Location</Popup>
+            <Popup>📍 Your Location</Popup>
           </Marker>
         )}
 
-        {/* Issue markers with clustering */}
-        <MarkerClusterGroup>
-          {issues.map((issue) => (
-            <Marker
-              key={issue._id}
-              position={[issue.location.coordinates[1], issue.location.coordinates[0]]}
-              icon={createCustomIcon(issue.severity)}
-              eventHandlers={{
-                click: () => handleMarkerClick(issue),
-              }}
-            >
-              <Popup>
-                <div className="popup-content">
-                  {issue.photos && issue.photos.length > 0 && (
-                    <img 
-                      src={issue.photos[0]} 
-                      alt={issue.title}
-                      className="popup-image"
-                    />
-                  )}
-                  <div className="popup-body">
-                    <h6 className="popup-title">{issue.title}</h6>
-                    <p className="popup-description">{issue.description}</p>
-                    <div className="popup-meta">
-                      <span className={`badge badge-${issue.severity}`}>
-                        {issue.severity}
-                      </span>
-                      <span className={`badge badge-${issue.status}`}>
-                        {issue.status}
-                      </span>
-                      <span>👍 {issue.upvotes || 0}</span>
-                      <span>💬 {issue.comments?.length || 0}</span>
+        {/* Issue markers with clustering - Only show if not heatmap mode */}
+        {!showHeatmap && (
+          <MarkerClusterGroup
+            chunkedLoading
+            spiderfyOnMaxZoom={true}
+            showCoverageOnHover={false}
+            zoomToBoundsOnClick={true}
+            maxClusterRadius={50}
+          >
+            {issues.map((issue) => {
+              // Validate coordinates
+              const lat = issue.location?.coordinates?.[1];
+              const lng = issue.location?.coordinates?.[0];
+              
+              if (!lat || !lng || isNaN(lat) || isNaN(lng)) {
+                console.warn('Invalid coordinates for issue:', issue._id);
+                return null;
+              }
+
+              return (
+                <Marker
+                  key={issue._id}
+                  position={[lat, lng]}
+                  icon={createCustomIcon(issue.severity)}
+                  eventHandlers={{
+                    click: () => handleMarkerClick(issue),
+                  }}
+                >
+                  <Popup>
+                    <div className="popup-content">
+                      {issue.photos && issue.photos.length > 0 && (
+                        <img 
+                          src={issue.photos[0]} 
+                          alt={issue.title}
+                          className="popup-image"
+                          onError={(e) => {
+                            e.target.style.display = 'none';
+                          }}
+                        />
+                      )}
+                      <div className="popup-body">
+                        <h6 className="popup-title">{issue.title}</h6>
+                        <p className="popup-description">{issue.description}</p>
+                        <div className="popup-meta">
+                          <span className={`badge badge-${issue.severity}`}>
+                            {issue.severity}
+                          </span>
+                          <span className={`badge badge-${issue.status}`}>
+                            {issue.status}
+                          </span>
+                          <span>👍 {issue.upvotes || 0}</span>
+                          <span>💬 {issue.comments?.length || 0}</span>
+                        </div>
+                        <div className="popup-actions">
+                          <Button 
+                            size="sm" 
+                            variant="primary"
+                            onClick={() => handleMarkerClick(issue)}
+                          >
+                            View Details
+                          </Button>
+                        </div>
+                      </div>
                     </div>
-                    <div className="popup-actions">
-                      <Button 
-                        size="sm" 
-                        variant="primary"
-                        onClick={() => handleMarkerClick(issue)}
-                      >
-                        View Details
-                      </Button>
-                    </div>
-                  </div>
-                </div>
-              </Popup>
-            </Marker>
-          ))}
-        </MarkerClusterGroup>
+                  </Popup>
+                </Marker>
+              );
+            })}
+          </MarkerClusterGroup>
+        )}
       </MapContainer>
 
       {/* Floating controls */}
@@ -209,7 +240,7 @@ const MapView = ({
             maxWidth: '400px'
           }}
         >
-          Click on the map to select issue location
+          📍 Click on the map to select issue location
         </div>
       )}
     </div>

@@ -1,7 +1,7 @@
 {
   "name": "urbanpatch-frontend",
   "version": "1.0.0",
-  "description": "Community-driven micro-improvement platform",
+  "description": "Community-driven micro-improvement platform for neighborhoods",
   "private": true,
   "dependencies": {
     "react": "^18.2.0",
@@ -12,9 +12,7 @@
     "react-bootstrap": "^2.9.1",
     "leaflet": "^1.9.4",
     "react-leaflet": "^4.2.1",
-    "leaflet.markercluster": "^1.5.3",
-    "react-leaflet-markercluster": "^3.0.0-rc1",
-    "leaflet.heat": "^0.2.0",
+    "react-leaflet-cluster": "^2.1.0",
     "socket.io-client": "^4.5.4",
     "axios": "^1.6.2",
     "react-toastify": "^9.1.3",
@@ -22,15 +20,23 @@
     "date-fns": "^2.30.0",
     "classnames": "^2.3.2"
   },
+  "devDependencies": {
+    "@testing-library/react": "^13.4.0",
+    "@testing-library/jest-dom": "^5.16.5",
+    "@testing-library/user-event": "^14.4.3"
+  },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "lint": "eslint src/**/*.{js,jsx}",
+    "format": "prettier --write src/**/*.{js,jsx,json,css,md}"
   },
   "eslintConfig": {
     "extends": [
-      "react-app"
+      "react-app",
+      "react-app/jest"
     ]
   },
   "browserslist": {
@@ -45,5 +51,24 @@
       "last 1 safari version"
     ]
   },
-  "proxy": "http://localhost:5000"
+  "proxy": "http://localhost:5000",
+  "keywords": [
+    "urbanpatch",
+    "community",
+    "neighborhood",
+    "issues",
+    "reporting",
+    "maps",
+    "openstreetmap"
+  ],
+  "author": "UrbanPatch Team",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/urbanpatch.git"
+  },
+  "bugs": {
+    "url": "https://github.com/yourusername/urbanpatch/issues"
+  },
+  "homepage": "."
 }
